@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+body {
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+}
+
+li:not(:first-child) {
+    padding: 0 1rem;
+}
+
+a:hover {
+    text-decoration: none
+}
