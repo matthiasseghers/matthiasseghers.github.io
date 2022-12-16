@@ -12,6 +12,11 @@ body {
     justify-content: center;
 }
 
+body.dark {
+    background-color: rgb(34,39,46);
+    color: white;
+}
+
 ul {
     display: flex;
     list-style: none;
@@ -20,6 +25,14 @@ ul {
 
 li:not(:first-child) {
     padding: 0 1rem;
+}
+
+a {
+    color: rgb(83, 155, 245);
+}
+
+a:visited {
+    color: rgb(83, 155, 245);
 }
 
 a:hover {
