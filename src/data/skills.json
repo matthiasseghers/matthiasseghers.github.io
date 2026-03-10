@@ -1,0 +1,28 @@
+{
+  "categories": [
+    {
+      "name": "Programming",
+      "items": ["JavaScript", "TypeScript", "PHP", "Python"]
+    },
+    {
+      "name": "Frontend",
+      "items": ["React"]
+    },
+    {
+      "name": "Backend",
+      "items": ["PHP", "Symfony", "Laravel", "Sulu", "MySQL"]
+    },
+    {
+      "name": "DevOps",
+      "items": ["Docker", "Git"]
+    },
+    {
+      "name": "Tools",
+      "items": ["VSCode", "PHPStorm", "iTerm2", "Postman"]
+    },
+    {
+      "name": "OS",
+      "items": ["macOS"]
+    }
+  ]
+}

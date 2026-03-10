@@ -1,0 +1,62 @@
+/* ─── CRT outer wrapper ─────────────────────────────────────────────────────── */
+
+#crt {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--color-bg);
+  overflow: hidden;
+}
+
+/* Vignette */
+#crt::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+  z-index: 12;
+}
+
+/* Thick Fallout-style scanlines — static, no animation */
+#crt::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(51, 255, 51, 0.04) 0px,
+    rgba(51, 255, 51, 0.04) 2px,
+    rgba(0, 0, 0, 0.25) 2px,
+    rgba(0, 0, 0, 0.25) 4px
+  );
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Rolling scanline band */
+body::before {
+  content: '';
+  position: fixed;
+  left: 0;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(51, 255, 51, 0.03) 50%,
+    transparent 100%
+  );
+  animation: scanroll 10s linear infinite;
+  pointer-events: none;
+  z-index: 13;
+}
+
+@keyframes scanroll {
+  0% {
+    top: -80px;
+  }
+  100% {
+    top: 100vh;
+  }
+}

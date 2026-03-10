@@ -1,0 +1,27 @@
+/* ─── Green phosphor (default) ─────────────────────────────────────────────── */
+:root {
+  --color-bg: #000000;
+  --color-primary: #33ff33;
+  --color-dim: #1e9e1e;
+  --color-bright: #7fff7f;
+  --color-error: #ff4444;
+  --color-warn: #ffcc00;
+  --color-echo: #28cc28;
+  --color-link: #7fff7f;
+
+  --glow-primary: 0 0 7px rgba(51, 255, 51, 0.85);
+  --glow-bright: 0 0 12px rgba(127, 255, 127, 0.9), 0 0 4px rgba(127, 255, 127, 0.6);
+  --glow-dim: 0 0 4px rgba(30, 158, 30, 0.6);
+  --glow-error: 0 0 8px rgba(255, 68, 68, 0.8);
+  --glow-warn: 0 0 8px rgba(255, 204, 0, 0.7);
+  --glow-link: 0 0 10px rgba(255, 255, 255, 0.8);
+
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+  --font-size: 14px;
+  --line-height: 1.3;
+
+  --cursor-blink: 530ms;
+
+  --padding-x: 2.5rem;
+  --padding-y: 2rem;
+}

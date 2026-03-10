@@ -1,29 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matthias Seghers</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
-    <link rel="stylesheet" href="./css/screen.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matthias Seghers</title>
 </head>
-
 <body>
-    <div>
-        <h1 class="gradient-text">Matthias Seghers</h1>
-        <p>I write code at <a href="https://icapps.com/" target="_blank">icapps</a>.</p>
-        <ul>
-            <li>
-                <a href="https:///github.com/matthiasseghers/" target="_blank">Github</a>
-            </li>
-            <li>
-                <a href="https://www.linkedin.com/in/matthiasseghers/" target="_blank">LinkedIn</a>
-            </li>
-        </ul>
+  <div id="crt">
+    <div id="terminal">
+      <div id="output"></div>
+      <div id="input-line">
+        <span id="prompt"></span>&nbsp;<span id="input-display"></span><span id="cursor">█</span>
+      </div>
     </div>
-    <script src="./scripts/scripts.js"></script>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
 </body>
-
 </html>

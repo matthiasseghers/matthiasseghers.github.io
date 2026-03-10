@@ -1,0 +1,10 @@
+{
+  "prompt": "guest@matthias.dev:~$",
+  "hostname": "matthias.dev",
+  "username": "matthias",
+  "theme": "green",
+  "bootSpeed": "normal",
+  "sounds": false,
+  "cursorBlinkMs": 530,
+  "baudRate": 9600
+}

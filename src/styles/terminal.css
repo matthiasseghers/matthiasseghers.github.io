@@ -1,0 +1,113 @@
+/* ─── Terminal container ─────────────────────────────────────────────────────── */
+
+#terminal {
+  font-family: var(--font-mono);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--color-primary);
+  text-shadow: var(--glow-primary);
+  padding: var(--padding-y) var(--padding-x);
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+#terminal::-webkit-scrollbar {
+  width: 0;
+}
+
+/* ─── Output lines ────────────────────────────────────────────────────────────── */
+
+#output .line {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+#output .line.dim {
+  color: var(--color-dim);
+  text-shadow: var(--glow-dim);
+}
+#output .line.bright {
+  color: var(--color-bright);
+  text-shadow: var(--glow-bright);
+}
+#output .line.error {
+  color: var(--color-error);
+  text-shadow: var(--glow-error);
+}
+#output .line.warn {
+  color: var(--color-warn);
+  text-shadow: var(--glow-warn);
+}
+#output .line.echo {
+  color: var(--color-echo);
+  text-shadow: var(--glow-primary);
+}
+
+/* ─── Links ───────────────────────────────────────────────────────────────────── */
+
+a {
+  color: var(--color-link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+a:visited {
+  color: var(--color-link);
+}
+
+a:hover {
+  color: #ffffff;
+  text-shadow: var(--glow-link);
+  text-decoration: none;
+}
+
+/* ─── Input line ──────────────────────────────────────────────────────────────── */
+
+#input-line {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+}
+
+#prompt {
+  flex-shrink: 0;
+  color: var(--color-bright);
+  text-shadow: var(--glow-bright);
+}
+
+#input-display {
+  white-space: pre;
+}
+
+/* Block cursor — replaced by inline .cursor-block; hide the standalone span */
+#cursor {
+  display: none;
+}
+
+.cursor-block {
+  background-color: var(--color-primary);
+  color: black;
+  text-shadow: none;
+}
+
+/* ─── Inline span styling (used by html:true lines, e.g. neofetch, boot) ───── */
+
+.line span.bright {
+  color: var(--color-bright);
+  text-shadow: var(--glow-bright);
+}
+.line span.dim {
+  color: var(--color-dim);
+  text-shadow: var(--glow-dim);
+}
+.line span.warn {
+  color: var(--color-warn);
+  text-shadow: var(--glow-warn);
+}
+.line span.ok {
+  color: var(--color-bright);
+  text-shadow: var(--glow-bright);
+}
