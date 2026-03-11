@@ -1,20 +1,19 @@
 import type { Line } from '../types';
-import type { Config } from '../types';
-import cfg from '../config.json';
-
-const _config = cfg as Config;
+import { config } from '../config';
 
 // ─── Baud rate / serial mode ──────────────────────────────────────────────────
 
 /** True when baudRate < 115200 — enables line-by-line animation + input lock */
 export function isSerialMode(): boolean {
-  return _config.baudRate < 115_200;
+  return config.baudRate < 115_200;
 }
 
 /** ms per line derived from baud rate (assumes ~60 chars/line, 10 bits/char) */
 export function baudDelay(): number {
-  return Math.round(600_000 / _config.baudRate);
+  return Math.round(600_000 / config.baudRate);
 }
+
+// ─── DOM refs ─────────────────────────────────────────────────────────────────
 
 const outputEl = document.getElementById('output') as HTMLDivElement;
 const terminalEl = document.getElementById('terminal') as HTMLDivElement;
@@ -43,27 +42,25 @@ export function printLine(line: Line): HTMLDivElement {
 }
 
 // ─── Print multiple Lines ─────────────────────────────────────────────────────
-
-export function printLines(lines: Line[]): void {
-  lines.forEach(printLine);
-}
-
-// ─── Print lines one-by-one with a delay between each ────────────────────────
-
-export async function printLinesAnimated(lines: Line[], delayMs = baudDelay()): Promise<void> {
-  for (const line of lines) {
-    printLine(line);
-    await new Promise<void>((resolve) => setTimeout(resolve, delayMs));
-  }
-}
-
-// ─── Baud-rate aware output: animates in serial mode, instant otherwise ───────
+// Handles two independent delay systems:
+//
+//   line.delayMs  — per-line intent (e.g. ping timing, npm install steps)
+//   baudDelay()   — global baseline from config (simulates slow serial terminal)
+//
+// Rule: take whichever is longer, so neither overrides the other.
+// Both undefined/0 → prints instantly.
 
 export async function printOutput(lines: Line[]): Promise<void> {
-  if (isSerialMode()) {
-    await printLinesAnimated(lines);
-  } else {
-    printLines(lines);
+  for (const line of lines) {
+    const perLine = line.delayMs ?? 0;
+    const baud = isSerialMode() ? baudDelay() : 0;
+    const delay = Math.max(perLine, baud);
+
+    if (delay > 0) {
+      await new Promise<void>((resolve) => setTimeout(resolve, delay));
+    }
+
+    printLine(line);
   }
 }
 
@@ -83,6 +80,19 @@ export function printEcho(prompt: string, input: string): void {
 
 export function clearOutput(): void {
   outputEl.innerHTML = '';
+}
+
+// ─── Show / hide the input line ───────────────────────────────────────────────
+// Commands and main.ts should use these instead of touching the DOM directly.
+
+const inputLineEl = document.getElementById('input-line') as HTMLElement;
+
+export function showInputLine(): void {
+  inputLineEl.style.display = 'flex';
+}
+
+export function hideInputLine(): void {
+  inputLineEl.style.display = 'none';
 }
 
 // ─── Formatting helpers ───────────────────────────────────────────────────────

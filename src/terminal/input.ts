@@ -1,8 +1,11 @@
 import type { Config, Section } from '../types';
-import { printEcho, printLine, printBlank, clearOutput } from './engine';
+import { printEcho, printLine, printBlank, clearOutput, showInputLine, hideInputLine, scrollToBottom } from './engine';
 import { keyClick } from './audio';
 
 // ─── Input state ──────────────────────────────────────────────────────────────
+// Note: `inputState` is exported for read access (history, current, cursorPos).
+// To change the locked flag, always use lockInput() / unlockInput() —
+// never write inputState.locked directly from outside this module.
 
 interface InputState {
   current: string;
@@ -19,6 +22,19 @@ export const inputState: InputState = {
   cursorPos: 0,
   locked: true,
 };
+
+// ─── Lock / unlock ────────────────────────────────────────────────────────────
+
+export function lockInput(): void {
+  inputState.locked = true;
+  hideInputLine();
+}
+
+export function unlockInput(): void {
+  inputState.locked = false;
+  showInputLine();
+  scrollToBottom();
+}
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 
@@ -52,7 +68,6 @@ export function handleTab(sections: Section[], builtinNames: string[]): void {
   if (!input) return;
 
   const allCommands = [...sections.map((s) => s.command), ...builtinNames];
-
   const matches = allCommands.filter((c) => c.startsWith(input));
 
   if (matches.length === 1) {
@@ -111,7 +126,6 @@ export function initInput(
           inputState.historyIndex = -1;
         }
 
-        // if expansion happened, echo the original input first, then the resolved command
         if (wasExpanded) {
           printEcho(cfg.prompt, inputState.current.trim());
           printLine({ text: raw, style: 'dim' });
