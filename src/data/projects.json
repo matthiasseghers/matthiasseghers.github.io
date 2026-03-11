@@ -3,6 +3,6 @@
     "name": "matthiasseghers.github.io",
     "description": "This terminal portfolio — built from scratch with TypeScript and Vite.",
     "url": "https://github.com/matthiasseghers/matthiasseghers.github.io",
-    "tech": ["TypeScript", "Vite", "Web Audio API"]
+    "tech": ["TypeScript", "Vite"]
   }
 ]

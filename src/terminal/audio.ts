@@ -10,28 +10,6 @@ function getCtx(): AudioContext {
   return ctx;
 }
 
-// ─── POST beep (single short square-wave burst) ───────────────────────────────
-
-export function postBeep(): void {
-  try {
-    const ac = getCtx();
-    const osc = ac.createOscillator();
-    const gain = ac.createGain();
-
-    osc.connect(gain);
-    gain.connect(ac.destination);
-
-    osc.type = 'square'; // PC speaker characteristic
-    osc.frequency.value = 880; // classic BIOS POST frequency
-    gain.gain.value = 0.25;
-
-    osc.start();
-    osc.stop(ac.currentTime + 0.18);
-  } catch {
-    // Audio unavailable — fail silently
-  }
-}
-
 // ─── Mechanical key click ────────────────────────────────────────────────────
 // Bassy two-stage sound:
 //   Stage 1 — body thud:  wide bandpass at ~280 Hz, the main low-mid mass

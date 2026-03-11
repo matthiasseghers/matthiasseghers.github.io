@@ -1,6 +1,5 @@
 import type { Config } from '../types';
 import { printLine, clearOutput, scrollToBottom } from './engine';
-import { postBeep } from './audio';
 
 const sleep = (ms: number): Promise<void> => new Promise((r) => setTimeout(r, ms));
 
@@ -170,10 +169,6 @@ export async function runBoot(cfg: Config, onReady: () => Promise<void>): Promis
     };
     document.addEventListener('keydown', handler);
   });
-
-  if (cfg.sounds) {
-    postBeep();
-  }
 
   clearOutput();
   scrollToBottom();
