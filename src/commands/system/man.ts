@@ -4,6 +4,8 @@ import aboutData from '../../data/about.json';
 
 const about = aboutData as AboutData;
 
+export const description = 'Read the manual — try: man matthias';
+
 const HEADER = `MATTHIAS(1)          User Commands          MATTHIAS(1)`;
 const B: Line = { text: '\u00A0' };
 const D = (text: string): Line => ({ text });

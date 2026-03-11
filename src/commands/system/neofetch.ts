@@ -7,6 +7,8 @@ const about = aboutData as AboutData;
 
 const PAD = 18;
 
+export const description = 'System info, neofetch-style';
+
 export function neofetch(): Line[] {
   const sep = '─'.repeat(config.username.length + config.hostname.length + 1);
 

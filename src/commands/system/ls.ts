@@ -1,5 +1,7 @@
 import type { Line, Section } from '../../types';
 
+export const description = 'list directory contents';
+
 const getSize = (data: unknown): string => {
   const bytes = new TextEncoder().encode(JSON.stringify(data)).length;
   if (bytes < 1024) return `${bytes}B`;

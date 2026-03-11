@@ -6,7 +6,7 @@ const about = data as AboutData;
 
 export const aboutSection: Section = {
   command: 'about',
-  description: 'Who am I',
+  description: 'Information about me',
   data: about,
   render(): Line[] {
     return [

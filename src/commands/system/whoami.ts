@@ -4,6 +4,8 @@ import aboutData from '../../data/about.json';
 
 const about = aboutData as AboutData;
 
+export const description = 'Who i am.';
+
 export function whoami(): Line[] {
   return [
     {

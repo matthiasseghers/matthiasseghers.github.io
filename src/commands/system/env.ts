@@ -1,6 +1,8 @@
 import type { Line } from '../../types';
 import { config } from '../../config';
 
+export const description = 'Environment variables';
+
 export function env(): Line[] {
   return [
     { text: `USER=${config.username}` },

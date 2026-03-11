@@ -4,6 +4,8 @@ import aboutData from '../../data/about.json';
 
 const about = aboutData as AboutData;
 
+export const description = 'Print a section — try: cat about';
+
 export function cat(args: string[], sections: Section[]): Line[] {
   if (args.length === 0) return [{ text: 'cat: missing operand', style: 'error' }];
   const raw = args[0] ?? '';
