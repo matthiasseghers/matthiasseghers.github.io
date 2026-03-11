@@ -1,6 +1,4 @@
-import type { Line } from '../types';
-
-// ─── Commit data ──────────────────────────────────────────────────────────────
+import type { Line } from '../../types';
 
 interface Commit {
   hash: string;
@@ -98,9 +96,7 @@ const COMMITS: Commit[] = [
   },
 ];
 
-// ─── Renderer ─────────────────────────────────────────────────────────────────
-
-export function cmdGitLog(): Line[] {
+export function gitLog(): Line[] {
   const lines: Line[] = [];
 
   COMMITS.forEach((commit, i) => {

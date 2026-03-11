@@ -1,6 +1,6 @@
-import type { Section, Line, LinkEntry } from '../types';
-import { sectionHeader, linkLine } from '../terminal/engine';
-import data from '../data/links.json';
+import type { Section, Line, LinkEntry } from '../../types';
+import { sectionHeader, linkLine } from '../../terminal/engine';
+import data from '../../data/links.json';
 
 const entries = data as LinkEntry[];
 

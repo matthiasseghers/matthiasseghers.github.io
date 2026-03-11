@@ -1,6 +1,6 @@
-import type { Section, Line, ProjectEntry } from '../types';
-import { sectionHeader, indent, linkLine } from '../terminal/engine';
-import data from '../data/projects.json';
+import type { Section, Line, ProjectEntry } from '../../types';
+import { sectionHeader, indent, linkLine } from '../../terminal/engine';
+import data from '../../data/projects.json';
 
 const entries = data as ProjectEntry[];
 

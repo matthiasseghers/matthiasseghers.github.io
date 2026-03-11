@@ -1,6 +1,6 @@
-import type { Section, Line, AboutData } from '../types';
-import { sectionHeader, indent } from '../terminal/engine';
-import data from '../data/about.json';
+import type { Section, Line, AboutData } from '../../types';
+import { sectionHeader, indent } from '../../terminal/engine';
+import data from '../../data/about.json';
 
 const about = data as AboutData;
 

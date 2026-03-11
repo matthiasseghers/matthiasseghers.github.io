@@ -1,16 +1,19 @@
 import { printOutput } from '../../terminal/engine';
-import cfg from '../../config.json';
-import type { Config } from '../../types';
+import { config } from '../../config';
 
-const config = cfg as Config;
+// ─── Note ─────────────────────────────────────────────────────────────────────
+// sudo stays as a special async export because:
+//   1. sudoRmRfRoot performs direct DOM manipulation for the glitch effect
+//   2. sudo needs the onReboot callback passed in from main.ts
+// These genuinely cannot be expressed as a plain Line[] return.
 
-export async function cmdSudo(args: string[], onReboot: () => void): Promise<void> {
+export async function sudo(args: string[], onReboot: () => void): Promise<void> {
   const joined = args.join(' ');
   const isRmRfRoot =
     args.includes('rm') && (args.includes('-rf') || args.includes('-fr')) && args.includes('/');
 
   if (isRmRfRoot) {
-    await cmdSudoRmRfRoot(onReboot);
+    await sudoRmRfRoot(onReboot);
     return;
   }
 
@@ -19,7 +22,6 @@ export async function cmdSudo(args: string[], onReboot: () => void): Promise<voi
     return;
   }
 
-  // wrong password loop
   await printOutput([{ text: `[sudo] password for ${config.username}:`, style: 'dim' }]);
   await new Promise((r) => setTimeout(r, 1400));
   await printOutput([{ text: 'Sorry, try again.', style: 'error' }]);
@@ -31,11 +33,10 @@ export async function cmdSudo(args: string[], onReboot: () => void): Promise<voi
   await printOutput([{ text: 'sudo: 2 incorrect password attempts', style: 'error' }]);
 }
 
-export async function cmdSudoRmRfRoot(onReboot: () => void): Promise<void> {
+export async function sudoRmRfRoot(onReboot: () => void): Promise<void> {
   await printOutput([{ text: `[sudo] password for ${config.username}:`, style: 'dim' }]);
   await new Promise((r) => setTimeout(r, 1200));
 
-  // phase 1 — glitch lines print fast
   const glitch = [
     'Segmentation fault (core dumped)',
     'KERNEL PANIC \u2014 not syncing: Attempted to kill init!',
@@ -52,7 +53,6 @@ export async function cmdSudoRmRfRoot(onReboot: () => void): Promise<void> {
 
   await new Promise((r) => setTimeout(r, 300));
 
-  // phase 2 — CSS glitch on the entire terminal
   const terminal = document.getElementById('terminal') ?? document.body;
   terminal.style.transition = 'none';
 
@@ -71,13 +71,11 @@ export async function cmdSudoRmRfRoot(onReboot: () => void): Promise<void> {
     await new Promise((r) => setTimeout(r, 80));
   }
 
-  // phase 3 — flash to white then black
   terminal.style.filter = 'brightness(10)';
   await new Promise((r) => setTimeout(r, 80));
   terminal.style.filter = 'brightness(0)';
   await new Promise((r) => setTimeout(r, 400));
 
-  // cleanup and reboot
   terminal.style.filter = 'none';
   terminal.style.transform = 'none';
   onReboot();

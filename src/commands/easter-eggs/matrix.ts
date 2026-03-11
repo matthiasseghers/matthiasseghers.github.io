@@ -53,7 +53,6 @@ function startMatrixRain(): () => void {
         continue;
       }
 
-      // body — green characters behind the head
       ctx.fillStyle = '#00ff41';
       for (let j = 1; j < 6; j++) {
         if (Math.random() > 0.3) {
@@ -65,7 +64,6 @@ function startMatrixRain(): () => void {
         }
       }
 
-      // head — bright white, always on top
       ctx.fillStyle = '#ffffff';
       ctx.fillText(chars[Math.floor(Math.random() * chars.length)] ?? '', i * fontSize, y);
 
@@ -85,8 +83,10 @@ function startMatrixRain(): () => void {
 }
 
 // ─── Main export ──────────────────────────────────────────────────────────────
+// Note: matrix returns a cleanup function rather than Line[] — it manages its own
+// canvas overlay. main.ts handles it as a special case in the executor.
 
-export async function cmdHack(): Promise<() => void> {
+export async function matrix(): Promise<() => void> {
   await printBlank();
   await typeWriter('Wake up, Matthias...', 'dim', 80);
   await new Promise((r) => setTimeout(r, 1200));

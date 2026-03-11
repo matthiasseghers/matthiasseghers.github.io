@@ -1,7 +1,7 @@
-import type { Section, Line, ExperienceEntry } from '../types';
-import { sectionHeader } from '../terminal/engine';
-import { renderTable } from '../terminal/table';
-import data from '../data/experience.json';
+import type { Section, Line, ExperienceEntry } from '../../types';
+import { sectionHeader } from '../../terminal/engine';
+import { renderTable } from '../../terminal/table';
+import data from '../../data/experience.json';
 
 const entries = data as ExperienceEntry[];
 

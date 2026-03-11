@@ -1,0 +1,9 @@
+import type { Line } from '../../types';
+import { gitLog } from './gitlog';
+import { gitStatus } from '../easter-eggs/git-status';
+
+export function git(args: string[]): Line[] {
+  if (args[0] === 'log') return gitLog();
+  if (args[0] === 'status') return gitStatus();
+  return [{ text: `git: '${args[0] ?? ''}' is not a git command`, style: 'error' }];
+}

@@ -1,6 +1,6 @@
-import type { Section, Line, SkillsData } from '../types';
-import { sectionHeader } from '../terminal/engine';
-import data from '../data/skills.json';
+import type { Section, Line, SkillsData } from '../../types';
+import { sectionHeader } from '../../terminal/engine';
+import data from '../../data/skills.json';
 
 const skills = data as SkillsData;
 
