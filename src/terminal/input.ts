@@ -1,5 +1,13 @@
 import type { Config, Section } from '../types';
-import { printEcho, printLine, printBlank, clearOutput, showInputLine, hideInputLine, scrollToBottom } from './engine';
+import {
+  printEcho,
+  printLine,
+  printBlank,
+  clearOutput,
+  showInputLine,
+  hideInputLine,
+  scrollToBottom,
+} from './engine';
 import { keyClick } from './audio';
 
 // ─── Input state ──────────────────────────────────────────────────────────────

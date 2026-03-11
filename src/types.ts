@@ -5,9 +5,9 @@ export type LineStyle = 'normal' | 'bright' | 'dim' | 'error' | 'warn' | 'echo';
 export interface Line {
   text: string;
   style?: LineStyle;
-  html?: boolean;    // when true, text is rendered as innerHTML (for links)
-  delayMs?: number;  // pause BEFORE this line prints. undefined = instant.
-                     // if baud delay is also active, the longer of the two wins.
+  html?: boolean; // when true, text is rendered as innerHTML (for links)
+  delayMs?: number; // pause BEFORE this line prints. undefined = instant.
+  // if baud delay is also active, the longer of the two wins.
 }
 
 // ─── Command function contract ────────────────────────────────────────────────

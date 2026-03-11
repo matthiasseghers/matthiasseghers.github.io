@@ -18,8 +18,8 @@ import {
   hideInputLine,
   showInputLine,
 } from './terminal/engine';
-import { runBoot }                          from './terminal/boot';
-import { showWelcome }                      from './terminal/welcome';
+import { runBoot } from './terminal/boot';
+import { showWelcome } from './terminal/welcome';
 import { initPrompt, initInput, inputState, lockInput, unlockInput } from './terminal/input';
 
 // ─── Commands ─────────────────────────────────────────────────────────────────
@@ -135,7 +135,9 @@ void runBoot(config, async () => {
     config,
     SECTIONS,
     [...registry.keys()],
-    (raw) => { void execute(raw); },
+    (raw) => {
+      void execute(raw);
+    },
     reboot,
   );
 });

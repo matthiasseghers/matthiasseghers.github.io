@@ -1,6 +1,20 @@
 import type { Line } from '../../types';
 
-const KNOWN = ['node', 'npm', 'git', 'ls', 'cat', 'echo', 'pwd', 'env', 'bash', 'sh', 'zsh', 'python', 'php'];
+const KNOWN = [
+  'node',
+  'npm',
+  'git',
+  'ls',
+  'cat',
+  'echo',
+  'pwd',
+  'env',
+  'bash',
+  'sh',
+  'zsh',
+  'python',
+  'php',
+];
 
 export const description = 'Locate a command';
 
