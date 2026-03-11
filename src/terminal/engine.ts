@@ -1,5 +1,6 @@
 import type { Line } from '../types';
 import { config } from '../config';
+import { printTick, printLineEnd } from './audio';
 
 // ─── Baud rate / serial mode ──────────────────────────────────────────────────
 
@@ -38,6 +39,7 @@ export function printLine(line: Line): HTMLDivElement {
 
   outputEl.appendChild(div);
   scrollToBottom();
+  if (config.sounds) printTick();
   return div;
 }
 
@@ -61,6 +63,7 @@ export async function printOutput(lines: Line[]): Promise<void> {
     }
 
     printLine(line);
+    if (config.sounds && delay > 0) printLineEnd();
   }
 }
 
