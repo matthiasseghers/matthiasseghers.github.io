@@ -11,21 +11,19 @@ import { config } from './config';
 import {
   clearOutput,
   printOutput,
-  printEcho,
   printLine,
   isSerialMode,
-  scrollToBottom,
   hideInputLine,
   showInputLine,
 } from './terminal/engine';
-import { runBoot } from './terminal/boot';
-import { showWelcome } from './terminal/welcome';
-import { initPrompt, initInput, inputState, lockInput, unlockInput } from './terminal/input';
+import { runBoot }                                       from './terminal/boot';
+import { showWelcome }                                   from './terminal/welcome';
+import { initPrompt, initInput, lockInput, unlockInput } from './terminal/input';
 
 // ─── Commands ─────────────────────────────────────────────────────────────────
-import { registry, special, unknown, SECTIONS } from './commands/registry';
+import { registry, special, unknown } from './commands/registry';
 
-// ─── Active modal cleanup (e.g. hack matrix rain) ────────────────────────────
+// ─── Active modal cleanup (e.g. matrix rain) ─────────────────────────────────
 
 let activeCleanup: (() => void) | null = null;
 
@@ -41,15 +39,21 @@ document.addEventListener(
   true,
 );
 
-// ─── Serial-mode gate ────────────────────────────────────────────────────────
-// Hides input and locks keyboard during animated output.
+// ─── Serial-mode gate ─────────────────────────────────────────────────────────
+// Locks input and hides the input line during animated output in serial mode.
 
 async function runLocked(fn: () => Promise<void>): Promise<void> {
-  if (isSerialMode()) lockInput();
+  if (isSerialMode()) {
+    lockInput();
+    hideInputLine();
+  }
   try {
     await fn();
   } finally {
-    if (isSerialMode()) unlockInput();
+    if (isSerialMode()) {
+      showInputLine();
+      unlockInput();
+    }
   }
 }
 
@@ -61,7 +65,7 @@ function reboot(): void {
   setTimeout(() => {
     clearOutput();
     void runBoot(config, async () => {
-      await showWelcome(SECTIONS);
+      await showWelcome();
       unlockInput();
     });
   }, 1000);
@@ -81,7 +85,7 @@ async function execute(raw: string): Promise<void> {
 
   // Internal signal used by Ctrl+L to re-show welcome without echo
   if (cmd === '__welcome__') {
-    await runLocked(() => showWelcome(SECTIONS));
+    await runLocked(showWelcome);
     return;
   }
 
@@ -96,19 +100,20 @@ async function execute(raw: string): Promise<void> {
   switch (cmd) {
     case 'clear':
       clearOutput();
-      await runLocked(() => showWelcome(SECTIONS));
+      await runLocked(showWelcome);
       break;
 
     case 'reboot':
       reboot();
       break;
 
-    case 'matrix': {
+    case 'hack': {
       lockInput();
       hideInputLine();
-      const cleanup = await special.matrix();
+      const cleanup = await special.hack();
       activeCleanup = () => {
         cleanup();
+        showInputLine();
         unlockInput();
       };
       break;
@@ -129,15 +134,9 @@ async function execute(raw: string): Promise<void> {
 initPrompt(config);
 
 void runBoot(config, async () => {
-  await showWelcome(SECTIONS);
+  await showWelcome();
   unlockInput();
-  initInput(
-    config,
-    SECTIONS,
-    [...registry.keys()],
-    (raw) => {
-      void execute(raw);
-    },
-    reboot,
-  );
+  initInput(config, [...registry.keys()], (raw) => {
+    void execute(raw);
+  });
 });

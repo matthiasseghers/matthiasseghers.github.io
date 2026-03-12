@@ -8,22 +8,24 @@ import { skillsSection } from './content/skills';
 import { linksSection } from './content/links';
 
 // ─── System commands ──────────────────────────────────────────────────────────
-import { cat, description as catDesc } from './system/cat';
-import { date, description as dateDesc } from './system/date';
-import { echo, description as echoDesc } from './system/echo';
-import { env, description as envDesc } from './system/env';
-import { git, description as gitDesc } from './system/git';
-import { help } from './system/help';
-import { ls, description as lsDesc } from './system/ls';
-import { man, description as manDesc } from './system/man';
-import { neofetch, description as neofetchDesc } from './system/neofetch';
-import { pwd, description as pwdDesc } from './system/pwd';
-import { uname, description as unameDesc } from './system/uname';
-import { which, description as whichDesc } from './system/which';
-import { whoami, description as whoamiDesc } from './system/whoami';
+// Simple commands export `command: CommandModule` — description and fn together.
+// Commands that need runtime context (ls, cat, help) export factory functions.
+import { command as date } from './system/date';
+import { command as echo } from './system/echo';
+import { command as env } from './system/env';
+import { command as git } from './system/git';
+import { command as man } from './system/man';
+import { command as neofetch } from './system/neofetch';
+import { command as pwd } from './system/pwd';
+import { command as uname } from './system/uname';
+import { command as which } from './system/which';
+import { command as whoami } from './system/whoami';
+import { makeLs } from './system/ls';
+import { makeCat } from './system/cat';
+import { makeHelp } from './system/help';
 
 // ─── Easter eggs ──────────────────────────────────────────────────────────────
-// No descriptions exported — these are intentionally hidden from help.
+// No CommandModule export — intentionally hidden from help.
 import { cd } from './easter-eggs/cd';
 import { chmod } from './easter-eggs/chmod';
 import { coffee } from './easter-eggs/coffee';
@@ -48,57 +50,63 @@ export const SECTIONS: Section[] = [
   linksSection,
 ];
 
+// ─── Context-injected commands ────────────────────────────────────────────────
+// Built once here with SECTIONS injected — descriptions and fns come from the
+// returned CommandModule so there's no duplication.
+
+const lsCmd = makeLs(SECTIONS);
+const catCmd = makeCat(SECTIONS);
+
 // ─── Descriptions ─────────────────────────────────────────────────────────────
-// Controls what appears in `help`. Commands NOT listed here are hidden.
-// To add a new visible command: export a description from its file and add here.
-// Order here is the order they appear in help output.
+// Derived entirely from CommandModule.description — no manual strings.
+// Order here controls order in help output.
 
 export const descriptions = new Map<string, string>([
-  // Content — pulled from Section.description, order matches SECTIONS
+  // Content — from Section.description
   ...SECTIONS.map((s): [string, string] => [s.command, s.description]),
 
-  // System — pulled from each command file
-  ['git', gitDesc],
-  ['neofetch', neofetchDesc],
-  ['man', manDesc],
-  ['ls', lsDesc],
-  ['cat', catDesc],
-  ['whoami', whoamiDesc],
-  ['date', dateDesc],
-  ['pwd', pwdDesc],
-  ['echo', echoDesc],
-  ['env', envDesc],
-  ['which', whichDesc],
-  ['uname', unameDesc],
+  // System — from CommandModule.description
+  ['git', git.description],
+  ['neofetch', neofetch.description],
+  ['man', man.description],
+  ['ls', lsCmd.description],
+  ['cat', catCmd.description],
+  ['whoami', whoami.description],
+  ['date', date.description],
+  ['pwd', pwd.description],
+  ['echo', echo.description],
+  ['env', env.description],
+  ['which', which.description],
+  ['uname', uname.description],
 
-  // Meta — clear and reboot live in main.ts, help describes itself
+  // Meta — live in main.ts, no command file to derive from
   ['clear', 'Clear the terminal'],
   ['reboot', 'Replay the boot sequence'],
   ['help', 'Show this message'],
 ]);
 
+const helpCmd = makeHelp(descriptions);
+
 // ─── Standard registry ────────────────────────────────────────────────────────
-// To add a new command: import it above, add to registry below, and add to
-// descriptions above if it should appear in help.
 
 export const registry = new Map<string, CommandFn>([
   // Content
   ...SECTIONS.map((s): [string, CommandFn] => [s.command, () => s.render()]),
 
   // System
-  ['ls', (args) => ls(args, SECTIONS)],
-  ['cat', (args) => cat(args, SECTIONS)],
-  ['help', () => help(descriptions)],
-  ['whoami', whoami],
-  ['date', date],
-  ['pwd', pwd],
-  ['uname', uname],
-  ['echo', echo],
-  ['env', env],
-  ['which', which],
-  ['man', man],
-  ['neofetch', neofetch],
-  ['git', git],
+  ['ls', lsCmd.fn],
+  ['cat', catCmd.fn],
+  ['help', helpCmd.fn],
+  ['git', git.fn],
+  ['neofetch', neofetch.fn],
+  ['man', man.fn],
+  ['whoami', whoami.fn],
+  ['date', date.fn],
+  ['pwd', pwd.fn],
+  ['uname', uname.fn],
+  ['echo', echo.fn],
+  ['env', env.fn],
+  ['which', which.fn],
 
   // Easter eggs — not in descriptions, won't appear in help
   ['ping', ping],

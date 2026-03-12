@@ -91,6 +91,12 @@ a:hover {
   background-color: var(--color-primary);
   color: black;
   text-shadow: none;
+  animation: blink var(--cursor-blink-ms, 530ms) step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
 /* ─── Inline span styling (used by html:true lines, e.g. neofetch, boot) ───── */

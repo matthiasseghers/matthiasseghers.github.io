@@ -1,7 +1,6 @@
-import type { Line } from '../../types';
+import type { CommandModule } from '../../types';
 
-export const description = 'Current date and time';
-
-export function date(): Line[] {
-  return [{ text: new Date().toString() }];
-}
+export const command: CommandModule = {
+  description: 'Current date and time',
+  fn: () => [{ text: new Date().toString() }],
+};

@@ -6,30 +6,37 @@ export interface Line {
   text: string;
   style?: LineStyle;
   html?: boolean; // when true, text is rendered as innerHTML (for links)
-  delayMs?: number; // pause BEFORE this line prints. undefined = instant.
-  // if baud delay is also active, the longer of the two wins.
+  delayMs?: number; // per-line intent delay — see engine.ts printOutput
 }
 
-// ─── Command function contract ────────────────────────────────────────────────
-// Every command in commands/ must satisfy this signature.
-// Commands only return data — they never call printOutput themselves.
+// ─── Command types ────────────────────────────────────────────────────────────
 
+/** Standard command — returns lines, never calls printOutput itself */
 export type CommandFn = (args: string[]) => Line[] | Promise<Line[]>;
 
-// ─── Section (content commands registered in registry.ts) ────────────────────
+/**
+ * Shape every command module must export.
+ * Enforced by TypeScript — forgetting `description` is a compile error.
+ *
+ * Usage:
+ *   import type { CommandModule } from '../../types';
+ *   export const command: CommandModule = { description: '...', fn: myFn };
+ *
+ * Note: content sections use the Section interface instead — they have
+ * additional metadata (data, render) and are registered differently.
+ */
+export interface CommandModule {
+  description: string;
+  fn: CommandFn;
+}
+
+// ─── Section (content commands with metadata) ─────────────────────────────────
 
 export interface Section {
   command: string;
   description: string;
   render: () => Line[];
   data?: unknown; // raw source data — used by ls -l for file size display
-}
-
-// ─── Command registry entry ───────────────────────────────────────────────────
-
-export interface CmdEntry {
-  command: string;
-  fn: CommandFn;
 }
 
 // ─── Data shapes (validated against JSON data files) ─────────────────────────

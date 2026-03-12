@@ -12,28 +12,24 @@ export interface TableConfig {
   align?: ColAlign[];
 }
 
-export function renderTable(cfg: TableConfig): Line[] {
-  const style = cfg.style ?? 'mysql';
-  const aligns = cfg.align ?? cfg.headers.map(() => 'left' as ColAlign);
+export function renderTable(options: TableConfig): Line[] {
+  const style = options.style ?? 'mysql';
+  const aligns = options.align ?? options.headers.map(() => 'left' as ColAlign);
 
-  // ── Column widths ──────────────────────────────────────────────────────────
-  const widths = cfg.headers.map((h, ci) =>
-    Math.max(h.length, ...cfg.rows.map((r) => (r[ci] ?? '').length)),
+  const widths = options.headers.map((h, ci) =>
+    Math.max(h.length, ...options.rows.map((r) => (r[ci] ?? '').length)),
   );
 
-  // ── Style characters ──────────────────────────────────────────────────────
   const S = STYLES[style];
-
-  // ── Build lines ───────────────────────────────────────────────────────────
   const lines: Line[] = [];
 
   lines.push(txt(S.top(widths)));
-  lines.push(txt(row(cfg.headers, widths, aligns, S)));
+  lines.push(txt(row(options.headers, widths, aligns, S)));
   lines.push(txt(S.headSep(widths)));
 
-  cfg.rows.forEach((r, ri) => {
+  options.rows.forEach((r, ri) => {
     lines.push(txt(row(r, widths, aligns, S)));
-    if (S.rowSep && ri < cfg.rows.length - 1) lines.push(txt(S.rowSep(widths)));
+    if (S.rowSep && ri < options.rows.length - 1) lines.push(txt(S.rowSep(widths)));
   });
 
   if (S.bottom) lines.push(txt(S.bottom(widths)));
@@ -52,11 +48,11 @@ function pad(text: string, width: number, align: ColAlign): string {
   if (extra <= 0) return text;
   if (align === 'right') return ' '.repeat(extra) + text;
   if (align === 'center') {
-    const l = Math.floor(extra / 2),
-      r = extra - l;
+    const l = Math.floor(extra / 2);
+    const r = extra - l;
     return ' '.repeat(l) + text + ' '.repeat(r);
   }
-  return text + ' '.repeat(extra); // left
+  return text + ' '.repeat(extra);
 }
 
 function row(cells: string[], widths: number[], aligns: ColAlign[], s: StyleDef): string {
@@ -79,15 +75,12 @@ interface StyleDef {
 }
 
 const STYLES: Record<TableStyle, StyleDef> = {
-  // Classic MySQL: top+bottom dashes, header sep dashes, no row dividers
   mysql: {
     vbar: '|',
     top: (w) => hline(w, '-', '+', '+', '+'),
     headSep: (w) => hline(w, '-', '+', '+', '+'),
     bottom: (w) => hline(w, '-', '+', '+', '+'),
   },
-
-  // Separated: header uses ===, every row has a --- divider
   separated: {
     vbar: '|',
     top: (w) => hline(w, '=', '+', '+', '+'),
@@ -95,8 +88,6 @@ const STYLES: Record<TableStyle, StyleDef> = {
     rowSep: (w) => hline(w, '-', '+', '+', '+'),
     bottom: (w) => hline(w, '-', '+', '+', '+'),
   },
-
-  // Dots: . for borders, : as vbar
   dots: {
     vbar: ':',
     top: (w) => hline(w, '.', '.', '.', '.'),

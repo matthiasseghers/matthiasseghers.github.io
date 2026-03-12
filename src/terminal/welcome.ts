@@ -1,4 +1,4 @@
-import type { Section, Line } from '../types';
+import type { Line } from '../types';
 import { printBlank, printLine, printOutput } from './engine';
 import figlet from 'figlet';
 import ansiShadow from 'figlet/importable-fonts/ANSI Shadow.js';
@@ -20,7 +20,7 @@ export const ASCII_M: string[] = figlet.textSync('M', { font: 'ANSI Shadow' }).s
 
 export const RULE = '─'.repeat(54);
 
-export async function showWelcome(_sections: Section[]): Promise<void> {
+export async function showWelcome(): Promise<void> {
   await printOutput(ASCII_NAME);
   printBlank();
   printLine({ text: RULE, style: 'dim' });

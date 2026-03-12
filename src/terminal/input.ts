@@ -1,19 +1,8 @@
-import type { Config, Section } from '../types';
-import {
-  printEcho,
-  printLine,
-  printBlank,
-  clearOutput,
-  showInputLine,
-  hideInputLine,
-  scrollToBottom,
-} from './engine';
+import type { Config } from '../types';
+import { printEcho, printLine, printBlank, clearOutput } from './engine';
 import { keyClick } from './audio';
 
 // ─── Input state ──────────────────────────────────────────────────────────────
-// Note: `inputState` is exported for read access (history, current, cursorPos).
-// To change the locked flag, always use lockInput() / unlockInput() —
-// never write inputState.locked directly from outside this module.
 
 interface InputState {
   current: string;
@@ -31,22 +20,17 @@ export const inputState: InputState = {
   locked: true,
 };
 
-// ─── Lock / unlock ────────────────────────────────────────────────────────────
-
 export function lockInput(): void {
   inputState.locked = true;
-  hideInputLine();
 }
 
 export function unlockInput(): void {
   inputState.locked = false;
-  showInputLine();
-  scrollToBottom();
 }
 
 // ─── DOM refs ─────────────────────────────────────────────────────────────────
 
-const promptEl = document.getElementById('prompt') as HTMLSpanElement;
+const promptEl  = document.getElementById('prompt')        as HTMLSpanElement;
 const displayEl = document.getElementById('input-display') as HTMLSpanElement;
 
 // ─── Render current input to DOM ──────────────────────────────────────────────
@@ -58,25 +42,28 @@ function escapeHtml(s: string): string {
 export function renderInput(): void {
   const { current, cursorPos } = inputState;
   const before = escapeHtml(current.slice(0, cursorPos));
-  const at = escapeHtml(current[cursorPos] ?? ' ');
-  const after = escapeHtml(current.slice(cursorPos + 1));
+  const at     = escapeHtml(current[cursorPos] ?? ' ');
+  const after  = escapeHtml(current.slice(cursorPos + 1));
   displayEl.innerHTML = `${before}<span class="cursor-block">${at}</span>${after}`;
 }
 
-// ─── Set prompt text from config ──────────────────────────────────────────────
+// ─── Set prompt text and cursor speed from config ─────────────────────────────
 
 export function initPrompt(cfg: Config): void {
   promptEl.textContent = cfg.prompt;
+  document.documentElement.style.setProperty('--cursor-blink-ms', `${cfg.cursorBlinkMs}ms`);
+  console.log('initPrompt called', cfg.cursorBlinkMs);
 }
 
 // ─── Tab completion ───────────────────────────────────────────────────────────
+// Receives a flat list of all command names — built once in main.ts from
+// registry.keys() and passed in. No deduplication needed here.
 
-export function handleTab(sections: Section[], builtinNames: string[]): void {
+export function handleTab(commands: string[]): void {
   const input = inputState.current.trim().toLowerCase();
   if (!input) return;
 
-  const allCommands = [...sections.map((s) => s.command), ...builtinNames];
-  const matches = allCommands.filter((c) => c.startsWith(input));
+  const matches = commands.filter((c) => c.startsWith(input));
 
   if (matches.length === 1) {
     inputState.current = matches[0] ?? '';
@@ -93,15 +80,12 @@ export function handleTab(sections: Section[], builtinNames: string[]): void {
 
 export function initInput(
   cfg: Config,
-  sections: Section[],
-  builtinNames: string[],
+  commands: string[],
   executeCommand: (raw: string) => void,
-  _onReboot: () => void,
 ): void {
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (inputState.locked) return;
 
-    // Handle Ctrl combos before the main switch so they don't block regular keys
     if (e.ctrlKey) {
       if (e.key === 'l') {
         e.preventDefault();
@@ -121,10 +105,10 @@ export function initInput(
       case 'Enter': {
         let raw = inputState.current.trim();
 
-        const lastCmd = inputState.history[0] ?? '';
+        const lastCmd  = inputState.history[0] ?? '';
         const lastWord = lastCmd.trim().split(/\s+/).pop() ?? '';
 
-        const expanded = raw.replace(/!!/g, lastCmd).replace(/!\$/g, lastWord);
+        const expanded   = raw.replace(/!!/g, lastCmd).replace(/!\$/g, lastWord);
         const wasExpanded = expanded !== raw;
         raw = expanded;
 
@@ -174,7 +158,7 @@ export function initInput(
 
       case 'Tab':
         e.preventDefault();
-        handleTab(sections, builtinNames);
+        handleTab(commands);
         break;
 
       case 'ArrowUp':
